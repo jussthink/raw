@@ -5,28 +5,67 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jusodici <jusodici@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/16 16:01:47 by jusodici          #+#    #+#             */
-/*   Updated: 2023/10/16 16:01:48 by jusodici         ###   ########.fr       */
+/*   Created: 2023/10/23 10:25:26 by jusodici          #+#    #+#             */
+/*   Updated: 2023/10/23 10:29:29 by jusodici         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./libft.h"
+#include "libft.h"
+
+static int	ft_valid_set(char c, char const *set)
+{
+	unsigned long	i;
+
+	i = 0;
+	while (set[i])
+	{
+		if (set[i] == c)
+			return (1);
+		i++;
+	}	
+	return (0);
+}
 
 char	*ft_strtrim(char const *s1, char const *set)
 {
-	size_t	start;
-	size_t	end;
+	char			*str;
+	unsigned long	i;
+	unsigned long	start;
+	unsigned long	end;
 
-	if (!s1 || !set)
-		return (NULL);
 	start = 0;
-	while (s1[start] && ft_strchr(set, s1[start]))
+	if (!s1 || !set)
+		return (0);
+	end = ft_strlen(s1);
+	while (s1[start] && ft_valid_set(s1[start], set))
 		start++;
-	end = ft_strlen(&s1[start]);
-	if (end)
-	{
-		while (s1[start + end - 1] && ft_strchr(set, s1[start + end - 1]))
-			end--;
-	}
-	return (ft_substr(s1, start, end));
+	while (end > start && ft_valid_set(s1[end - 1], set))
+		end --;
+	str = ft_calloc(sizeof (char), (end - start) + 1);
+	if (!str)
+		return (0);
+	i = 0;
+	while (start < end)
+		str[i++] = s1[start++];
+	return (str);
 }
+//****************************************************************************
+// INPUT
+//#1. La string a recortar.
+//#2. El conjunto de caracteres utilizado como referencia para el recorte.
+//****************************************************************************
+// OUTPUT
+//La string recortada. NULL si falla la reserva. 
+//****************************************************************************
+// DESCRIPTION
+// Reserva con malloc(3) y devuelve una copia de ’s1’ con los caracteres 
+// dados en ’set’ eliminados tanto del principio como del final.
+//****************************************************************************
+/*
+int	main(void)
+{
+	char s1[] = "hola que \t tal te encuentras hola";
+	char set[]	= "hola";
+	printf("%s", ft_strtrim(s1, set));
+}
+*/
